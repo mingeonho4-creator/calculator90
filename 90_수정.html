@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>주식 90% 목표가 계산기</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+  .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 16px; padding: 1.5rem; max-width: 480px; width: 100%; }
+  label { font-size: 13px; color: #666; display: block; margin-bottom: 6px; }
+  input[type=number] { width: 100%; font-size: 20px; font-weight: 500; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; color: #111; }
+  input[type=number]:focus { border-color: #555; }
+  .mb { margin-bottom: 1.25rem; }
+  .divider { border-top: 1px solid #e0e0e0; padding-top: 1.25rem; margin-top: 0.25rem; }
+  .hint { font-size: 12px; color: #999; margin-bottom: 1rem; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .box { background: #f7f7f7; border-radius: 10px; padding: 1rem; text-align: center; }
+  .box-label { font-size: 12px; color: #888; margin-bottom: 4px; }
+  .box-value { font-size: 22px; font-weight: 600; color: #111; }
+  .box-value.green { color: #16a34a; }
+  .row { background: #f7f7f7; border-radius: 10px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; }
+  .row-label { font-size: 13px; color: #888; }
+  .row-value { font-size: 16px; font-weight: 600; color: #111; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="mb">
+    <label>현재 주가 ($)</label>
+    <input type="number" id="currentPrice" value="7.09" step="0.01" min="0">
+  </div>
+  <div class="mb">
+    <label>현재 상승률 (%)</label>
+    <input type="number" id="currentPct" value="78" step="0.1" min="0">
+  </div>
+  <div class="divider">
+    <p class="hint">현재가 × (1 + 부족한 %p) = 90% 목표가</p>
+    <div class="grid">
+      <div class="box">
+        <p class="box-label">부족한 상승률</p>
+        <p class="box-value" id="remaining">12.0%p</p>
+      </div>
+      <div class="box">
+        <p class="box-label">90% 목표가</p>
+        <p class="box-value green" id="targetPrice">$7.94</p>
+      </div>
+    </div>
+    <div class="row">
+      <span class="row-label">현재가 → 목표가 차이</span>
+      <span class="row-value" id="diff">+$0.85</span>
+    </div>
+  </div>
+</div>
+<script>
+function calc() {
+  const price = parseFloat(document.getElementById('currentPrice').value) || 0;
+  const pct = parseFloat(document.getElementById('currentPct').value) || 0;
+  const remaining = 90 - pct;
+  const target = price * (1 + remaining / 100);
+  const diff = target - price;
+  document.getElementById('remaining').textContent = remaining.toFixed(1) + '%p';
+  document.getElementById('targetPrice').textContent = '$' + target.toFixed(2);
+  document.getElementById('diff').textContent = (diff >= 0 ? '+' : '') + '$' + diff.toFixed(2);
+}
+document.getElementById('currentPrice').addEventListener('input', calc);
+document.getElementById('currentPct').addEventListener('input', calc);
+calc();
+</script>
+</body>
+</html>
